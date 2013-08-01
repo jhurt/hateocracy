@@ -2,11 +2,13 @@
   "manifest_version": 2,
 
   "name": "Hateocracy",
-  "description": "With this extension you can see people on Fitocracy that you are following that are not following you back. Haters.",
-  "version": "1.0",
-
+  "description": "Some people on Fitocracy want all the love from the community and never give anything back. Use Hateocracy to find these haters.",
+  "version": "1.1",
+  "icons": { "16": "icon16.png",
+             "48": "icon48.png",
+             "128": "icon128.png" },
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": "icon19.png",
     "default_popup": "popup.html"
   },
   "permissions": [

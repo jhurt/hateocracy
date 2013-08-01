@@ -98,6 +98,8 @@
     $('#haters').empty();
     $('#loading').show();
     $('#refresh-button').hide();
+    allFollowers = [];
+    allFriends = [];
     getUsername(function(username) {
       getFriends(username, 0, function() {
         getFollowers(username, 0, function() {

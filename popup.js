@@ -65,6 +65,7 @@
     });
   }
 
+  //TODO: this is getting a 403 response
   function unfollow(id, callback) {
     $.ajax({
       url: 'https://www.fitocracy.com/profile_facepile/',
@@ -80,7 +81,23 @@
     });
   }
 
-  $(document).ready(function () {
+  function showHaters(haters) {
+    $('#loading').hide();
+    $('#refresh-button').show();
+    var hatersDiv = $('#haters');
+    _.each(haters, function(hater, i) {
+      var markup = '<img src="https://s3.amazonaws.com/static.fitocracy.com/site_media/' + hater['pic'] + '" class="hater"> '
+      markup += '<a target="_blank" href="https://www.fitocracy.com/profile/' + hater['username'] + '">' + hater['username'] + '</a>';
+      //markup += '<button id="' + hater['id'] + '" class="unfollow-button" type="button">Unfollow</button>';
+      markup += '<br>';
+      hatersDiv.append(markup);
+    });
+  }
+
+  function refreshHaters() {
+    $('#haters').empty();
+    $('#loading').show();
+    $('#refresh-button').hide();
     getUsername(function(username) {
       getFriends(username, 0, function() {
         getFollowers(username, 0, function() {
@@ -90,15 +107,26 @@
           haters.sort(function(a,b) { if (a['username'].toLowerCase() > b['username'].toLowerCase()) { return 1; }
                                       if (a['username'].toLowerCase() < b['username'].toLowerCase()) { return -1; }
                                       return 0; });
-          var hatersDiv = $('#haters');
-          _.each(haters, function(hater, i) {
-            var markup = '<img src="https://s3.amazonaws.com/static.fitocracy.com/site_media/' + hater['pic'] + '"> ' + hater['username'];
-            //markup += '<button id="' + hater['id'] + '" class="unfollow-button" type="button">Unfollow</button>';
-            markup += '<br>';
-            hatersDiv.append(markup);
-          });
+          localStorage.setItem('haters', JSON.stringify(haters));
+          showHaters(haters);
         });
       });
+    });
+  }
+
+  $(document).ready(function () {
+    var storedHatersString = localStorage.getItem('haters');
+    if(storedHatersString) {
+      var haters = JSON.parse(storedHatersString);
+      showHaters(haters);
+    }
+    else {
+      refreshHaters();
+    }
+
+    $('#refresh-button').click(function(e) {
+      e.preventDefault();
+      refreshHaters();
     });
   });
 

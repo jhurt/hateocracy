@@ -5,14 +5,14 @@
     <script src="underscore.js"></script>
     <script src="jquery-1.9.1.min.js"></script>
     <script src="popup.js"></script>
-    
+
     <style>
       body {
         min-width: 357px;
         overflow-x: hidden;
       }
 
-      img {
+      img.hater {
         margin: 5px;
         border: 2px solid black;
         vertical-align: middle;
@@ -22,6 +22,8 @@
     </style>
   </head>
   <body>
+  	<div align="center" id="loading"><img src="ajax-loader.gif"></div>
+  	<button id="refresh-button">Refresh</button>
   	<div id="haters"></div>
   </body>
 </html>

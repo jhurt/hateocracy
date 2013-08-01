@@ -65,28 +65,51 @@
     });
   }
 
+  function unfollow(id, callback) {
+    $.ajax({
+      url: 'https://www.fitocracy.com/profile_facepile/',
+      type: 'POST',
+      data: {'profile_user_id': id},
+      timeout: 10000,
+      success:function () {
+        callback();
+      },
+      error:function (e) {
+        alert(e);
+      }
+    });
+  }
+
   $(document).ready(function () {
     getUsername(function(username) {
-      //alert('got username ' + username);
       getFriends(username, 0, function() {
-        //alert('got friends');
         getFollowers(username, 0, function() {
-          //alert('got followers');
           var allUserIds = _.union(_.pluck(allFriends, 'id'), _.pluck(allFollowers, 'id'));
           var haterIds = _.difference(allUserIds, _.intersection(_.pluck(allFriends, 'id'), _.pluck(allFollowers, 'id')));
           var haters = _.filter(allFriends, function(friend) { return _.contains(haterIds, friend['id']); });
           haters.sort(function(a,b) { if (a['username'].toLowerCase() > b['username'].toLowerCase()) { return 1; }
                                       if (a['username'].toLowerCase() < b['username'].toLowerCase()) { return -1; }
                                       return 0; });
-          //alert(haters.length + ' haters');
           var hatersDiv = $('#haters');
           _.each(haters, function(hater, i) {
-            var markup = '<img src="https://s3.amazonaws.com/static.fitocracy.com/site_media/' + hater['pic'] + '"> ' + hater['username'] + '<br>';
+            var markup = '<img src="https://s3.amazonaws.com/static.fitocracy.com/site_media/' + hater['pic'] + '"> ' + hater['username'];
+            //markup += '<button id="' + hater['id'] + '" class="unfollow-button" type="button">Unfollow</button>';
+            markup += '<br>';
             hatersDiv.append(markup);
           });
         });
       });
     });
   });
+
+  $(document).on('click', '.unfollow-button', function(e) {
+    e.preventDefault();
+    var id = $(this).prop('id');
+    unfollow(id, function() {
+      $(this).prop('disabled', true);
+      $(this).html('Unfollowed!');
+    });
+  });
+
 }
 )();
